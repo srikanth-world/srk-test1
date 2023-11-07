@@ -15,7 +15,7 @@ for sheet_name in workbook.sheetnames:
     counting_new_data = False
 
     # Iterate through rows in the sheet
-    for row in sheet.iter_rows():
+    for row in sheet.iter_rows(min_row=4):
         for cell in row:
             if cell.value == "QA02 - Old":
                 old_data_row_count = 0
