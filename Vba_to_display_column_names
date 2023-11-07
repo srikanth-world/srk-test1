@@ -1,4 +1,4 @@
-Sub HighlightUniqueValuesAndWriteColumnNames()
+Sub HighlightUniqueValuesAndColumnNames()
     Dim ws As Worksheet
     Set ws = ThisWorkbook.Sheets("Sheet1") ' Change "Sheet1" to your sheet name
 
@@ -12,11 +12,17 @@ Sub HighlightUniqueValuesAndWriteColumnNames()
         .TintAndShade = 0
     End With
 
-    ' Write column names in the second row at the end of the sheet
+    ' Loop through each cell in the top row and highlight the unique values and their respective column names
     Dim LastCol As Long
     LastCol = ws.Cells(1, ws.Columns.Count).End(xlToLeft).Column
     Dim Col As Long
     For Col = 1 To LastCol
-        ws.Cells(2, Col).Value = ws.Cells(1, Col).Value
+        Dim ColName As String
+        ColName = ws.Cells(1, Col).Value
+        ws.Cells(2, Col).Value = ColName
+        If Application.WorksheetFunction.CountIf(ws.Columns(Col), ws.Cells(2, Col).Value) = 1 Then
+            ws.Cells(2, Col).Interior.Color = RGB(255, 0, 0) ' Change the color as desired
+            ws.Cells(2, Col).Offset(-1, 0).Interior.Color = RGB(255, 0, 0) ' Highlight the corresponding unique value
+        End If
     Next Col
 End Sub
