@@ -15,24 +15,20 @@ for sheet_name in workbook.sheetnames:
     counting_new_data = False
 
     # Iterate through rows in the sheet
-    for row in sheet.iter_rows(min_row=1):
+    for row in sheet.iter_rows():
+        if counting_new_data:
+            new_data_row_count += 1
+        else:
+            old_data_row_count += 1
+
         for cell in row:
-            if cell.value == "QA02 - Old":
-                old_data_row_count = 0
-                counting_new_data = False
             if cell.value == "QA03 - New":
-                new_data_row_count = 0
                 counting_new_data = True
-                continue  # Skip to the next iteration
+                break  # No need to search for "QA03 - New" in the same row
 
-            if counting_new_data and cell.value is not None:
-                new_data_row_count += 1
-            elif cell.value is not None:
-                old_data_row_count += 1
-
-    # Subtract 1 from each count to exclude the header row
-    old_data_row_count -= 1
-    new_data_row_count -= 1
+    # Subtract 3 from each count to exclude the header rows and the "QA03 - New" row
+    old_data_row_count -= 3
+    new_data_row_count -= 3
 
     # Write the row counts at the end of the sheet
     sheet.cell(row=sheet.max_row + 1, column=1, value="Old Data Row Count:")
