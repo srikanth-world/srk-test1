@@ -1,32 +1,32 @@
 import openpyxl
 
-def count_rows_and_write_to_sheet(file_path):
-    workbook = openpyxl.load_workbook(file_path)
+# Load your Excel file
+workbook = openpyxl.load_workbook('your_excel_file.xlsx')
 
-    for sheet_name in workbook.sheetnames:
-        worksheet = workbook[sheet_name]
-        count_old = 0
-        count_new = 0
-        flag = None
+# Iterate through each sheet in the workbook
+for sheet_name in workbook.sheetnames:
+    sheet = workbook[sheet_name]
 
-        for row in worksheet.iter_rows():
-            for cell in row:
-                if cell.value == "QA02 - Old":
-                    flag = "QA02 - Old"
-                elif cell.value == "QA03 - New":
-                    flag = "QA03 - New"
-                elif flag == "QA02 - Old":
-                    count_old += 1
-                elif flag == "QA03 - New":
-                    count_new += 1
+    # Initialize variables to keep track of row counts
+    old_data_row_count = 0
+    new_data_row_count = 0
 
-        last_row = worksheet.max_row
-        worksheet.cell(row=last_row + 1, column=1, value="Count of QA02 - Old Rows")
-        worksheet.cell(row=last_row + 1, column=2, value=count_old)
-        worksheet.cell(row=last_row + 2, column=1, value="Count of QA03 - New Rows")
-        worksheet.cell(row=last_row + 2, column=2, value=count_new)
+    # Iterate through rows in the sheet
+    for row in sheet.iter_rows():
+        for cell in row:
+            if cell.value == "QA02 - Old":
+                old_data_row_count = 0  # Reset the count when "QA02 - Old" is found
+            if cell.value == "QA03 - New":
+                new_data_row_count = 0  # Reset the count when "QA03 - New" is found
+                break  # No need to search for "QA03 - New" in the same row
+        old_data_row_count += 1  # Increment the count for the old data
+        new_data_row_count += 1  # Increment the count for the new data
 
-    workbook.save(file_path)
+    # Write the row counts at the end of the sheet
+    sheet.cell(row=sheet.max_row + 1, column=1, value="Old Data Row Count:")
+    sheet.cell(row=sheet.max_row, column=2, value=old_data_row_count)
+    sheet.cell(row=sheet.max_row + 2, column=1, value="New Data Row Count:")
+    sheet.cell(row=sheet.max_row + 2, column=2, value=new_data_row_count)
 
-# Replace 'your_file.xlsx' with the path to your Excel file
-count_rows_and_write_to_sheet('your_file.xlsx')
+# Save the modified workbook
+workbook.save('your_updated_excel_file.xlsx')
