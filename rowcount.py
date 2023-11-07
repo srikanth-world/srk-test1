@@ -11,16 +11,24 @@ for sheet_name in workbook.sheetnames:
     old_data_row_count = 0
     new_data_row_count = 0
 
+    # Flag to indicate when to start counting new data
+    counting_new_data = False
+
     # Iterate through rows in the sheet
     for row in sheet.iter_rows():
         for cell in row:
             if cell.value == "QA02 - Old":
-                old_data_row_count = 0  # Reset the count when "QA02 - Old" is found
+                old_data_row_count = 0
+                counting_new_data = False
             if cell.value == "QA03 - New":
-                new_data_row_count = 0  # Reset the count when "QA03 - New" is found
-                break  # No need to search for "QA03 - New" in the same row
-        old_data_row_count += 1  # Increment the count for the old data
-        new_data_row_count += 1  # Increment the count for the new data
+                new_data_row_count = 0
+                counting_new_data = True
+                continue  # Skip to the next iteration
+
+            if counting_new_data:
+                new_data_row_count += 1
+            else:
+                old_data_row_count += 1
 
     # Write the row counts at the end of the sheet
     sheet.cell(row=sheet.max_row + 1, column=1, value="Old Data Row Count:")
