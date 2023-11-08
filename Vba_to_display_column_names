@@ -15,8 +15,8 @@ Sub ApplyConditionalFormattingToAllSheetsWithColumnHighlight()
             uniqueValue = cell.Value
             If Application.WorksheetFunction.CountIf(rng, uniqueValue) = 1 Then
                 ' Apply conditional formatting to the cell (column header)
-                cell.FormatConditions.Add Type:=xlTextString, String:="=" & uniqueValue
-                With cell.FormatConditions(1)
+                ws.Cells(2, cell.Column).FormatConditions.Add Type:=xlExpression, Formula1:="=" & cell.Address & "=""=""" & uniqueValue & """"
+                With ws.Cells(2, cell.Column).FormatConditions(1)
                     .Interior.Color = RGB(172, 185, 130) ' Background color
                     .Font.Color = RGB(0, 0, 0) ' Font color
                 End With
