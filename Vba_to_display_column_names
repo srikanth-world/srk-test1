@@ -4,22 +4,19 @@ Sub ApplyConditionalFormattingToAllSheetsWithColumnHighlight()
     Dim formula As String
     Dim cell As Range
     Dim uniqueValue As Variant
-    
+
     formula = "A2:W2" ' Range in row 2 containing the column headers
-    
+
     For Each ws In ThisWorkbook.Sheets
         Set rng = ws.Range(formula)
-        
+
         ' Loop through each cell in the specified range
         For Each cell In rng
             uniqueValue = cell.Value
             If Application.WorksheetFunction.CountIf(rng, uniqueValue) = 1 Then
-                ' Apply conditional formatting to the cell (column header)
-                ws.Cells(2, cell.Column).FormatConditions.Add Type:=xlExpression, Formula1:="=" & cell.Address & "=""=""" & uniqueValue & """"
-                With ws.Cells(2, cell.Column).FormatConditions(1)
-                    .Interior.Color = RGB(172, 185, 130) ' Background color
-                    .Font.Color = RGB(0, 0, 0) ' Font color
-                End With
+                ' Highlight the individual cell (column header) with the unique value
+                cell.Interior.Color = RGB(172, 185, 130) ' Background color
+                cell.Font.Color = RGB(0, 0, 0) ' Font color
             End If
         Next cell
     Next ws
