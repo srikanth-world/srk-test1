@@ -1,21 +1,25 @@
-Sub ApplyConditionalFormattingToAllSheetsWithColumnHighlight()
+Sub ApplyConditionalFormattingToAllSheets2()
     Dim ws As Worksheet
+    Dim rng As Range
     Dim formula As String
-    Dim cell As Range
-    Dim uniqueValue As Variant
-
-    formula = "A2:W2" ' Range in row 2 containing the column headers
-
+    formula = "=$A:$W"
+    
     For Each ws In ThisWorkbook.Sheets
-        Set cell = ws.Range(formula).Find("*", SearchOrder:=xlByColumns, SearchDirection:=xlNext)
-        Do Until cell Is Nothing
-            uniqueValue = cell.Value
-            If Application.WorksheetFunction.CountIf(ws.Range(formula), uniqueValue) = 1 Then
-                ' Highlight the individual cell (column header) with the unique value
-                cell.Interior.Color = RGB(172, 185, 130) ' Background color
-                cell.Font.Color = RGB(0, 0, 0) ' Font color
-            End If
-            Set cell = ws.Range(formula).Find("*", cell, SearchOrder:=xlByColumns, SearchDirection:=xlNext)
-        Loop
+        Set rng = ws.Range(formula)
+        
+        rng.FormatConditions.Add Type:=xlUniqueValues
+        With rng.FormatConditions(rng.FormatConditions.Count)
+            .Interior.Color = RGB(172, 185, 130)
+            .Font.Color = RGB(0, 0, 0)
+        End With
+        
+        ' Extend the formatting to the row containing column headers (assumed to be in row 2)
+        Dim headerRange As Range
+        Set headerRange = ws.Range(ws.Cells(2, 1), ws.Cells(2, rng.Columns.Count))
+        headerRange.FormatConditions.Add Type:=xlUniqueValues
+        With headerRange.FormatConditions(headerRange.FormatConditions.Count)
+            .Interior.Color = RGB(172, 185, 130)
+            .Font.Color = RGB(0, 0, 0)
+        End With
     Next ws
 End Sub
