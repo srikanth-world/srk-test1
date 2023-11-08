@@ -1,6 +1,5 @@
 Sub ApplyConditionalFormattingToAllSheetsWithColumnHighlight()
     Dim ws As Worksheet
-    Dim rng As Range
     Dim formula As String
     Dim cell As Range
     Dim uniqueValue As Variant
@@ -8,16 +7,15 @@ Sub ApplyConditionalFormattingToAllSheetsWithColumnHighlight()
     formula = "A2:W2" ' Range in row 2 containing the column headers
 
     For Each ws In ThisWorkbook.Sheets
-        Set rng = ws.Range(formula)
-
-        ' Loop through each cell in the specified range
-        For Each cell In rng
+        Set cell = ws.Range(formula).Find("*", SearchOrder:=xlByColumns, SearchDirection:=xlNext)
+        Do Until cell Is Nothing
             uniqueValue = cell.Value
-            If Application.WorksheetFunction.CountIf(rng, uniqueValue) = 1 Then
+            If Application.WorksheetFunction.CountIf(ws.Range(formula), uniqueValue) = 1 Then
                 ' Highlight the individual cell (column header) with the unique value
                 cell.Interior.Color = RGB(172, 185, 130) ' Background color
                 cell.Font.Color = RGB(0, 0, 0) ' Font color
             End If
-        Next cell
+            Set cell = ws.Range(formula).Find("*", cell, SearchOrder:=xlByColumns, SearchDirection:=xlNext)
+        Loop
     Next ws
 End Sub
