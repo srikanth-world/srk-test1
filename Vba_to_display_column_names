@@ -1,28 +1,26 @@
-Sub HighlightUniqueValuesAndColumnNames()
+Sub ApplyConditionalFormattingToAllSheetsWithColumnHighlight()
     Dim ws As Worksheet
-    Set ws = ThisWorkbook.Sheets("Sheet1") ' Change "Sheet1" to your sheet name
-
-    ' Apply conditional formatting to highlight unique values
-    ws.Range("A1").CurrentRegion.Select ' Assuming your data starts in A1
-    Selection.FormatConditions.AddUniqueValues
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    Selection.FormatConditions(1).DupeUnique = xlDuplicate
-    With Selection.FormatConditions(1).Font
-        .ThemeColor = xlThemeColorAccent2
-        .TintAndShade = 0
-    End With
-
-    ' Loop through each cell in the top row and highlight the unique values and their respective column names
-    Dim LastCol As Long
-    LastCol = ws.Cells(1, ws.Columns.Count).End(xlToLeft).Column
-    Dim Col As Long
-    For Col = 1 To LastCol
-        Dim ColName As String
-        ColName = ws.Cells(1, Col).Value
-        ws.Cells(2, Col).Value = ColName
-        If Application.WorksheetFunction.CountIf(ws.Columns(Col), ws.Cells(2, Col).Value) = 1 Then
-            ws.Cells(2, Col).Interior.Color = RGB(255, 0, 0) ' Change the color as desired
-            ws.Cells(2, Col).Offset(-1, 0).Interior.Color = RGB(255, 0, 0) ' Highlight the corresponding unique value
-        End If
-    Next Col
+    Dim rng As Range
+    Dim formula As String
+    Dim cell As Range
+    Dim uniqueValue As Variant
+    
+    formula = "A2:W2" ' Range in row 2 containing the column headers
+    
+    For Each ws In ThisWorkbook.Sheets
+        Set rng = ws.Range(formula)
+        
+        ' Loop through each cell in the specified range
+        For Each cell In rng
+            uniqueValue = cell.Value
+            If Application.WorksheetFunction.CountIf(rng, uniqueValue) = 1 Then
+                ' Apply conditional formatting to the cell (column header)
+                cell.FormatConditions.Add Type:=xlExpression, Formula1:="=" & cell.Address & "='" & uniqueValue & "'"
+                With cell.FormatConditions(1)
+                    .Interior.Color = RGB(172, 185, 130) ' Background color
+                    .Font.Color = RGB(0, 0, 0) ' Font color
+                End With
+            End If
+        Next cell
+    Next ws
 End Sub
