@@ -1,25 +1,30 @@
-Sub ApplyConditionalFormattingToAllSheets2()
+Sub ApplyConditionalFormattingToAllSheets3()
     Dim ws As Worksheet
-    Dim rng As Range
     Dim formula As String
     formula = "=$A:$W"
     
     For Each ws In ThisWorkbook.Sheets
-        Set rng = ws.Range(formula)
+        Dim headerCell As Range
+        Set headerCell = ws.Cells(2, 1)
         
-        rng.FormatConditions.Add Type:=xlUniqueValues
-        With rng.FormatConditions(rng.FormatConditions.Count)
-            .Interior.Color = RGB(172, 185, 130)
-            .Font.Color = RGB(0, 0, 0)
-        End With
-        
-        ' Extend the formatting to the row containing column headers (assumed to be in row 2)
-        Dim headerRange As Range
-        Set headerRange = ws.Range(ws.Cells(2, 1), ws.Cells(2, rng.Columns.Count))
-        headerRange.FormatConditions.Add Type:=xlUniqueValues
-        With headerRange.FormatConditions(headerRange.FormatConditions.Count)
-            .Interior.Color = RGB(172, 185, 130)
-            .Font.Color = RGB(0, 0, 0)
-        End With
+        Do While headerCell.Value <> ""
+            Dim rng As Range
+            Set rng = ws.Range(headerCell, headerCell.Offset(1, 0))
+            
+            rng.FormatConditions.Add Type:=xlUniqueValues
+            With rng.FormatConditions(rng.FormatConditions.Count)
+                .Interior.Color = RGB(172, 185, 130)
+                .Font.Color = RGB(0, 0, 0)
+            End With
+            
+            headerCell.FormatConditions.Add Type:=xlUniqueValues
+            With headerCell.FormatConditions(headerCell.FormatConditions.Count)
+                .Interior.Color = RGB(172, 185, 130)
+                .Font.Color = RGB(0, 0, 0)
+            End With
+            
+            ' Move to the next header cell
+            Set headerCell = headerCell.Offset(0, 1)
+        Loop
     Next ws
 End Sub
