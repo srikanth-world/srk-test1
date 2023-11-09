@@ -1,26 +1,29 @@
-import xlrd
+import openpyxl
+from openpyxl.styles import PatternFill
 
 # Load the Excel file
-workbook = xlrd.open_workbook('your_excel_file.xlsx')
+workbook = openpyxl.load_workbook('your_excel_file.xlsx')
+sheet = workbook.active  # Assuming you're working with the active sheet
 
-# Create a dictionary to store column headers and their corresponding cell addresses with the specified interior color
-col_header_map = {}
-
-# Define the target interior color (RGB(172, 185, 130)) in its components
+# Define the RGB color you want to check
 target_color = (172, 185, 130)
 
-# Iterate through all the sheets in the workbook
-for sheet in workbook.sheets():
-    for row_index in range(sheet.nrows):
-        for col_index in range(sheet.ncols):
-            cell = sheet.cell(row_index, col_index)
-            # Check if the cell's interior color matches the target color
-            cell_xf = workbook.xf_list[cell.xf_index]
-            interior_color = cell_xf.background.pattern_colour_index
-            if interior_color == xlrd.BIFFRecords().colour_map[target_color]:
-                col_header = sheet.cell_value(0, col_index)  # Assuming column headers are in the first row
-                col_header_map[col_header] = (row_index + 1, col_index + 1)
+# Create a dictionary to store the column names
+column_names = {}
 
-# Print the column headers and their corresponding cell addresses with the specified interior color
-for col_header, cell_address in col_header_map.items():
-    print(f"Column Header: {col_header}, Cell Address: ({cell_address[0]}, {cell_address[1]})")
+# Loop through the rows and columns
+for row in sheet.iter_rows(min_row=1, max_row=2):
+    for cell in row:
+        # Check if the cell color matches the target color
+        if isinstance(cell.fill, PatternFill) and cell.fill.fgColor.rgb == target_color:
+            # Get the column letter for the cell
+            column_letter = openpyxl.utils.get_column_letter(cell.column)
+            # Get the corresponding column name from the header row
+            header_cell = sheet.cell(row=1, column=cell.column)
+            column_name = header_cell.value
+            # Store the column name in the dictionary
+            column_names[column_letter] = column_name
+
+# Print the column names for cells with the target color
+for column_letter, column_name in column_names.items():
+    print(f"Cell in column {column_letter} with color RGB{target_color} has the column name: {column_name}")
