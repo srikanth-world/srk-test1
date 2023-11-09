@@ -1,25 +1,29 @@
 import openpyxl
+from openpyxl.styles import PatternFill
 
 # Load the Excel file
 workbook = openpyxl.load_workbook('your_excel_file.xlsx')
 
-# Create a dictionary to store column headers and their corresponding cell addresses with background color
+# Create a dictionary to store column headers and their corresponding cell addresses with the specified interior color
 col_header_map = {}
+
+# Define the target interior color (RGB(172, 185, 130))
+target_color = 'ACC982'
 
 # Iterate through all the sheets in the workbook
 for sheet_name in workbook.sheetnames:
     sheet = workbook[sheet_name]
 
-    # Iterate through all cells in the sheet
+    # Iterate through all the cells in the sheet
     for row in sheet.iter_rows():
         for cell in row:
-            # Check if the cell has a background color
-            if cell.fill.start_color.rgb is not None:
+            # Check if the cell's interior color matches the target color
+            if cell.fill.start_color.rgb == target_color:
                 col_index = cell.column
                 col_header = sheet.cell(row=1, column=col_index).value
                 col_header_map[col_header] = cell.coordinate
 
-# Print the column headers and their corresponding cell addresses with background color
+# Print the column headers and their corresponding cell addresses with the specified interior color
 for col_header, cell_address in col_header_map.items():
     print(f"Column Header: {col_header}, Cell Address: {cell_address}")
 
