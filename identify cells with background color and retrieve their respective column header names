@@ -1,29 +1,17 @@
 import openpyxl
-from openpyxl.styles import PatternFill
+from openpyxl.styles import Color
 
 # Load the Excel file
 workbook = openpyxl.load_workbook('your_excel_file.xlsx')
-sheet = workbook.active  # Assuming you're working with the active sheet
+sheet = workbook['QA02']
 
-# Define the RGB color you want to check
-target_color = (172, 185, 130)
+# Define the RGB color you want to check (0,0,255 is blue)
+target_color = Color(rgb="0000FF")
 
-# Create a dictionary to store the column names
-column_names = {}
-
-# Loop through the rows and columns
-for row in sheet.iter_rows(min_row=1, max_row=2):
+# Iterate through the cells and check their background color
+for row in sheet.iter_rows():
     for cell in row:
-        # Check if the cell color matches the target color
-        if isinstance(cell.fill, PatternFill) and cell.fill.fgColor.rgb == target_color:
-            # Get the column letter for the cell
-            column_letter = openpyxl.utils.get_column_letter(cell.column)
-            # Get the corresponding column name from the header row
-            header_cell = sheet.cell(row=1, column=cell.column)
-            column_name = header_cell.value
-            # Store the column name in the dictionary
-            column_names[column_letter] = column_name
-
-# Print the column names for cells with the target color
-for column_letter, column_name in column_names.items():
-    print(f"Cell in column {column_letter} with color RGB{target_color} has the column name: {column_name}")
+        if cell.fill.start_color == target_color:
+            # Get the column name from the cell above (header row)
+            col_name = sheet.cell(row=1, column=cell.column).value
+            print(f"Cell in column {col_name} has the target color.")
