@@ -5,18 +5,20 @@ Sub FindCellsByColor()
     Dim targetColor As Long
     Dim colHeader As String
     Dim cellAddress As String
-    
+    Dim resultRow As Long
+
     ' Set the target color (RGB(172, 185, 130))
     targetColor = RGB(172, 185, 130)
-    
+
     ' Set the worksheets you are working with
-    Set wsData = ThisWorkbook.Worksheets("Sheet1") ' Change "Sheet1" to the name of your data sheet
-    Set wsResults = ThisWorkbook.Worksheets.Add
-    
+    Set wsData = ThisWorkbook.Sheets("Sheet1") ' Change "Sheet1" to the name of your data sheet
+    Set wsResults = ThisWorkbook.Sheets.Add
+
     ' Initialize the results worksheet
     wsResults.Cells(1, 1).Value = "Column Header"
     wsResults.Cells(1, 2).Value = "Cell Address"
-    
+    resultRow = 2
+
     ' Loop through cells in the data sheet
     For Each cell In wsData.UsedRange
         If cell.Interior.Color = targetColor Then
@@ -24,14 +26,15 @@ Sub FindCellsByColor()
             colHeader = wsData.Cells(1, cell.Column).Value
             cellAddress = cell.Address
             ' Record the results in the results worksheet
-            wsResults.Cells(wsResults.UsedRange.Rows.Count + 1, 1).Value = colHeader
-            wsResults.Cells(wsResults.UsedRange.Rows.Count, 2).Value = cellAddress
+            wsResults.Cells(resultRow, 1).Value = colHeader
+            wsResults.Cells(resultRow, 2).Value = cellAddress
+            resultRow = resultRow + 1
         End If
     Next cell
-    
+
     ' Optionally, format the results in the results worksheet
     wsResults.UsedRange.EntireColumn.AutoFit
-    
+
     ' Provide a message box with the results
     MsgBox "Cells with the specified interior color have been recorded in the results worksheet."
 End Sub
