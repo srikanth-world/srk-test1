@@ -1,4 +1,5 @@
 from openpyxl import load_workbook
+from openpyxl.styles import NamedStyle
 
 # Load the Excel file
 file_path = 'your_file.xlsx'
@@ -7,10 +8,15 @@ wb = load_workbook(file_path)
 # Assuming data is in the first sheet
 sheet = wb.active
 
-# Clear conditional formatting for all cells in the sheet
-for row in sheet.iter_rows():
-    for cell in row:
-        cell.conditional_formatting.clear()
+# Create a new sheet to copy data without conditional formatting
+new_sheet = wb.create_sheet("NoFormatting")
+
+# Copy values and styles to the new sheet
+for row in sheet.iter_rows(values_only=True):
+    new_sheet.append(row)
+
+# Remove the old sheet (optional, depends on your needs)
+wb.remove(sheet)
 
 # Save the modified workbook
 wb.save('your_modified_file.xlsx')
