@@ -1,14 +1,20 @@
-import pandas as pd
 from openpyxl import load_workbook
 
 # Load the Excel file
 file_path = 'your_file.xlsx'
-df = pd.read_excel(file_path, header=1)  # Assuming column names start from row 2
+wb = load_workbook(file_path)
 
-# Iterate through columns and check for color
+# Assuming data is in the first sheet
+sheet = wb.active
+
+# Iterate through columns and check for color in any row
 colored_columns = []
-for column in df.columns:
-    if any(df[column].apply(lambda x: isinstance(x, pd._libs.tslibs.timestamps.Timestamp) and x.style.fill.bgColor.rgb != '00000000')):
-        colored_columns.append(column)
+for column in sheet.iter_cols(min_col=1, max_col=sheet.max_column):
+    for cell in column:
+        if cell.row != 1 and cell.fill.start_color.index != '00000000':  # Exclude the header row
+            colored_columns.append(cell.column_letter)
+
+# Remove duplicates and sort the list
+colored_columns = sorted(list(set(colored_columns)))
 
 print("Columns with colored cells:", colored_columns)
