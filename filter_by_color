@@ -3,7 +3,9 @@ import openpyxl
 def check_filter_by_color(sheet):
     for column_index in range(1, sheet.max_column + 1):
         column_letter = openpyxl.utils.get_column_letter(column_index)
-        if sheet.auto_filter.filterColumn(column_index - 1).filter_on:
+        
+        # Check if filtering by color is enabled for the column
+        if sheet.auto_filter.get_column_letter(column_index).filterColumn.iconSet:
             print(f"Column {column_letter} supports filtering by color.")
 
 # Replace 'your_excel_file.xlsx' with the actual name of your Excel file
