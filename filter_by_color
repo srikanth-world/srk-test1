@@ -6,7 +6,7 @@ def check_filter_by_color(sheet):
         cell = sheet[column_letter + '2']
 
         for range_, rules in sheet.conditional_formatting._cf_rules.items():
-            if column_letter in range_:
+            if column_index == openpyxl.utils.column_index_from_string(range_.split(':')[0]):
                 print(f"Column {column_letter} supports filtering by color.")
                 break
 
