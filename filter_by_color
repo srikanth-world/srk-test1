@@ -7,14 +7,17 @@ wb = load_workbook(file_path)
 # Assuming data is in the first sheet
 sheet = wb.active
 
-# Iterate through columns and check for color in any row
+# Specify the row to check for colored cells
+target_row = 1
+
+# Find columns with colored cells in the specified row
 colored_columns = []
-for column in sheet.iter_cols(min_col=1, max_col=sheet.max_column):
+for column in sheet.iter_cols(min_col=1, max_col=sheet.max_column, min_row=target_row, max_row=target_row):
     for cell in column:
-        if cell.row != 1 and cell.fill.start_color.index != '00000000':  # Exclude the header row
-            colored_columns.append(cell.column_letter)
+        if cell.fill.start_color.index != '00000000':
+            colored_columns.append(sheet.cell(row=1, column=cell.column).column_letter)
 
 # Remove duplicates and sort the list
 colored_columns = sorted(list(set(colored_columns)))
 
-print("Columns with colored cells:", colored_columns)
+print("Columns with colored cells in row", target_row, ":", colored_columns)
