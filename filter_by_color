@@ -5,8 +5,9 @@ def check_filter_by_color(sheet):
         column_letter = openpyxl.utils.get_column_letter(column_index)
         cell = sheet[column_letter + '2']
 
-        if 's' in cell._style or 'S' in cell._style:
-            print(f"Column {column_letter} supports filtering by color.")
+        if cell._style:
+            if 's' in cell._style or 'S' in cell._style:
+                print(f"Column {column_letter} supports filtering by color.")
 
 # Replace 'your_excel_file.xlsx' with the actual name of your Excel file
 excel_file_path = 'your_excel_file.xlsx'
