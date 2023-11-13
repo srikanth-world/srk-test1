@@ -1,0 +1,16 @@
+from openpyxl import load_workbook
+
+# Load the Excel file
+file_path = 'your_file.xlsx'
+wb = load_workbook(file_path)
+
+# Assuming data is in the first sheet
+sheet = wb.active
+
+# Clear conditional formatting for all cells in the sheet
+for row in sheet.iter_rows():
+    for cell in row:
+        cell.conditional_formatting.clear()
+
+# Save the modified workbook
+wb.save('your_modified_file.xlsx')
