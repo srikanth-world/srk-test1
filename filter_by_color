@@ -5,10 +5,8 @@ def check_filter_by_color(sheet):
         column_letter = openpyxl.utils.get_column_letter(column_index)
         cell = sheet[column_letter + '2']
 
-        for range_ in sheet.conditional_formatting._cf_rules.keys():
-            if column_letter in range_:
-                print(f"Column {column_letter} supports filtering by color.")
-                break
+        if sheet.auto_filter.filterColumn(column_index - 1).iconSet:
+            print(f"Column {column_letter} supports filtering by color.")
 
 # Replace 'your_excel_file.xlsx' with the actual name of your Excel file
 excel_file_path = 'your_excel_file.xlsx'
