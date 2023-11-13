@@ -1,0 +1,10 @@
+Sub RemoveConditionalFormatting()
+    Dim ws As Worksheet
+    Set ws = ActiveSheet ' or specify a sheet like Sheets("Sheet1")
+
+    ' Clear conditional formatting in the entire sheet
+    ws.Cells.FormatConditions.Delete
+
+    ' Optionally, clear other formatting (e.g., font, borders, etc.)
+    ws.Cells.ClearFormats
+End Sub
